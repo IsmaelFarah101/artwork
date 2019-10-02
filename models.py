@@ -3,7 +3,7 @@ from peewee import *
 db = SqliteDatabase('artwork.db')
 
 class Artist(Model):
-    name = CharField()
+    name = CharField(unique=True)
     email = CharField()
 
 class Artwork(Model):
