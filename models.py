@@ -12,3 +12,5 @@ class Artwork(Model):
     price = DecimalField()
     sold = BooleanField(default=False)
     
+class ModelError(Exception):
+    pass
