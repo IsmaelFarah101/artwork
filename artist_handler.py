@@ -1,19 +1,20 @@
 from models import *
-import sqlite3
 
-def create_tables():
-    db.connect()
+def create_artist_tables():
     db.create_tables([Artist])
 
 def create_artist(name, email):
     try:
         artist = Artist(name=name, email=email)
         artist.save()
-    except sqlite3.Error as e:
-        print(f'Error Occured: {e}')
+        print("\nArtist Created\n")
+        return True
+    except Exception as e:
+        print('Database Error Couldnt Create Artist')
 
 def search_artist():
     try:
-        artists = Artist.select().name
+        artists = Artist.select()
         return artists
-    except sqlite3.Error as e:
+    except Exception as e:
+        print('Database Error Couldnt Fetch Artist')

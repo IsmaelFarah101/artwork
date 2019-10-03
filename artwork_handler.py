@@ -1,53 +1,58 @@
 from models import *
 import sqlite3
 
-def create_tables():
-    db.connect()
+def create_artwork_tables():
     db.create_tables([Artwork])
 
 def create_artwork(artist,name,price,sold):
     try:
         artistID = Artist.get(Artist.name == artist).id
-        artwork = Artwork(artistID=artistID, name=name, price=price, sold=sold).execute()
+        value = False
+        if sold == 1:
+            value = True
+        elif sold == 2:
+            value = False
+        artwork = Artwork(artistID=artistID, name=name, price=price, sold=value)
         artwork.save()
-        print('Artwork Created')
-    except sqlite3.Error as e:
-        print(f'Error occured: {e}')
+        print('\nArtwork Created\n')
+        return True
+    except Exception as e:
+        print('Database Error Couldnt Create Artwork')
 
-def update_artwork(artist, sold):
+def update_artwork(name, sold):
+    try:
+        value = False
+        if sold == 1:
+            value = True
+        elif sold == 2:
+            value = False
+        Artwork.update(sold = value).where(Artwork.name == name).execute()
+        print('\nArtist Updated\n')
+        return True
+    except Exception as e:
+        print(f'Database Error Couldnt Update Artwork {e}')
+
+def delete_artwork(name):    
+    try:
+        Artwork.delete().where(Artwork.name == name).execute()
+        print('\nArtwork Deleted\n')
+        return True
+    except Exception as e:
+        print('Database Error Couldnt Delete Artwork')
+
+def search_all_artwork(artist):
     try:
         artistID = Artist.get(Artist.name == artist).id
-        Artwork.update(Artwork.sold == sold).where(Artwork.artistID == artistID).execute()
-        print('Artist Updated')
-    except sqlite3.Error as e:
-        print(f'Error occured: {e}')
+        artwork = Artwork.select().where(Artwork.artistID == artistID)
+        return artwork
+    except Exception as e:
+        print('Database Error Couldnt Fetch All Artwork')
 
-def delete_artwork(name):
-    try:
-        Artwork.delete().where(Artwork.name == name)
-        print('Artwork Deleted')
-    except sqlite3.Error as e:
-        print(f'Error occured: {e}')
-
-def search_all(artist):
+def search_available_artwork(artist):
     try:
         artistID = Artist.get(Artist.name == artist).id
-        art_list = []
-        artwork = Artwork.select().where(Artwork.name == artist).execute()
-        for art in artwork:
-            art_list.append(art.name)
-        return art_list
-    except sqlite3.Error as e:
-        print(f'Error Occured: {e}')
-
-def search_available(artist):
-    try:
-        artistID = Artist.get(Artist.name == artist).id
-        art_list = []
-        artwork = Artwork.select().where((Artwork.name == artist)&(Artwork.sold == False)).execute()
-        for art in artwork:
-            art_list.append(art) 
-        return art_list
-    except sqlite3.Error as e:
-        print(f'Error occured: {e}')
+        artwork = Artwork.select().where((Artwork.artistID == artistID)&(Artwork.sold == False))
+        return artwork
+    except Exception as e:
+        print('Database Error Couldnt Fetch Available Artwork')
 
