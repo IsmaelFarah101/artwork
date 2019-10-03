@@ -11,3 +11,9 @@ def create_artist(name, email):
         artist.save()
     except sqlite3.Error as e:
         print(f'Error Occured: {e}')
+
+def search_artist():
+    try:
+        artists = Artist.select().name
+        return artists
+    except sqlite3.Error as e:
