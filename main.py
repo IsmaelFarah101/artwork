@@ -2,11 +2,13 @@ from menu import *
 from artist_handler import *
 from artwork_handler import *
 def options():
+    ##this prints of the menu for the user
     options = ["1: Search for Artist: ", "2: Add Artist: ","3: Search Artwork: ","4: Add Artwork: ","5: Update Artwork: ","6: Delete Artwork: "]
     for option in options:
         print(option)
 def main():
-    try:
+    try: 
+        ##this handles the users response and fetches the appropiate function or exits if the user chooses and different number
         options()
         question = int(input("Enter Choice: "))
         while question:
@@ -39,6 +41,7 @@ def main():
     except ValueError as e:
         print("Only enter numbers")
 
+##creates the tables if they dont exists and call the main function
 create_artist_tables()
 create_artwork_tables()
 main()
