@@ -8,52 +8,46 @@ def create_tables():
 def create_artwork(artist,name,price,sold):
     try:
         artistID = Artist.get(Artist.name == artist).id
-        if artistID is not None:
-            artwork = Artwork(artistID=artistID, name=name, price=price, sold=sold).execute()
-            artwork.save()
-            return True
-        else:
-            return False
-            raise ModelError('Artist Doesnt Exist')
-
+        artwork = Artwork(artistID=artistID, name=name, price=price, sold=sold).execute()
+        artwork.save()
+        print('Artwork Created')
     except sqlite3.Error as e:
         print(f'Error occured: {e}')
 
 def update_artwork(artist, sold):
     try:
         artistID = Artist.get(Artist.name == artist).id
-        if artistID is not None:
-            Artwork.update(Artwork.sold == sold).where(Artwork.artistID == artistID).execute()
-            return True
-        else:
-            return False
-            raise ModelError('Artist Doesnt Exist')
+        Artwork.update(Artwork.sold == sold).where(Artwork.artistID == artistID).execute()
+        print('Artist Updated')
     except sqlite3.Error as e:
         print(f'Error occured: {e}')
 
-def search(artist):
+def delete_artwork(name):
+    try:
+        Artwork.delete().where(Artwork.name == name)
+        print('Artwork Deleted')
+    except sqlite3.Error as e:
+        print(f'Error occured: {e}')
+
+def search_all(artist):
     try:
         artistID = Artist.get(Artist.name == artist).id
-        if artistID is not None:
-            art_list = []
-            artwork = Artwork.select().where(Artwork.name == artist).execute()
-            for art in artwork:
-                art_list.append(art.name)
-            return art_list
+        art_list = []
+        artwork = Artwork.select().where(Artwork.name == artist).execute()
+        for art in artwork:
+            art_list.append(art.name)
+        return art_list
     except sqlite3.Error as e:
         print(f'Error Occured: {e}')
 
 def search_available(artist):
     try:
         artistID = Artist.get(Artist.name == artist).id
-        if artistID is not None:
-            art_list = []
-            artwork = Artwork.select().where((Artwork.name == artist)&(Artwork.sold == False)).execute()
-            for art in artwork:
-                art_list.append(art)
-            return art_list
-        else:
-            raise ModelError('Artist Doesnt Exist')
+        art_list = []
+        artwork = Artwork.select().where((Artwork.name == artist)&(Artwork.sold == False)).execute()
+        for art in artwork:
+            art_list.append(art) 
+        return art_list
     except sqlite3.Error as e:
         print(f'Error occured: {e}')
 
